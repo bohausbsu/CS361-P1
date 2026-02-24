@@ -11,4 +11,4 @@ plugins {
 }
 
 rootProject.name = 'CS361-P1'
-include('app')
+include('proj')
