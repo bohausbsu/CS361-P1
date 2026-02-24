@@ -33,39 +33,51 @@ public class DFA implements DFAInterface {
         this.start = q0;
         this.currentState = this.start;
         this.finalStates = T;
-        // a new transition table must be made to correctly associate inner object
+        // a new transition table must be made to correctly associate transitions to local states
         this.transitionTable = new TransitionTable(transitionTable);
     }
 
     @Override
     public boolean addTransition(String fromState, String toState, char onSymb) {
 
+        // get local states by name
         State from = states.get(fromState);
         State to = states.get(toState);
 
+        // confirm no invalid arguments
         if (fromState == null || toState == null || !alphabet.contains(onSymb)) {
             // illegal states or symbol
             return false;
         }
-            return transitionTable.addTransition(from, onSymb, to);
+
+        // call transition table to manage transition
+        return transitionTable.addTransition(from, onSymb, to);
     }
 
     @Override
     public DFA swap(char symb1, char symb2) {
+
+        // create unique objects emulating existing 5 tuple for new DFA
+
+        // sigma
         Set<Character> newSigma = new HashSet<>(alphabet);
 
+        // Q
         StateSet newQ = new StateSet();
         for (State state : states) {
             newQ.add(new DFAState(state.getName()));
         }
 
+        // q0
         State newQ0 = newQ.get(start.getName());
 
+        // T
         StateSet newT = new StateSet();
         for (State state : finalStates) {
             newT.add(newQ.get(state.getName()));
         }
 
+        // delta, with swapped transitions on symb1 and symb2
         TransitionTable temp = transitionTable.swap(symb1, symb2);
         return new DFA(newSigma, newQ, newQ0, newT, temp);
 
@@ -73,17 +85,21 @@ public class DFA implements DFAInterface {
 
     @Override
     public boolean addState(String name) {
+        // confirm new state
         if (states.contains(name)) {
             return false;
         }
+        // add new state to state set
         State newState = new DFAState(name);
         states.add(newState);
+        // call to transition table to add new row
         return transitionTable.addState(newState);
 
     }
 
     @Override
     public boolean setFinal(String name) {
+        // confirm valid state and add to final set if so
         State state = states.get(name);
         if (state != null) {
             finalStates.add(state);
@@ -94,6 +110,7 @@ public class DFA implements DFAInterface {
 
     @Override
     public boolean setStart(String name) {
+        // confirm valid state and set start state if so
         State state = states.get(name);
         if (state != null) {
             start = state;
@@ -105,25 +122,30 @@ public class DFA implements DFAInterface {
 
     @Override
     public void addSigma(char symbol) {
+        // add symbol to sigma
         alphabet.add(symbol);
+        // call transition table to add column
         transitionTable.addSymbol(symbol);
     }
 
     @Override
     public boolean accepts(String s) {
+        // use flag so that we can save terminating val
         boolean status = false;
         if (s.isEmpty()) {
-            status = finalStates.contains(currentState);
-            currentState = start;
-            return status;
+            // terminate DFA and return acceptance state
+            return terminate();
         }
 
         char currToken = s.charAt(0);
         if (!alphabet.contains(currToken)) {
-            currentState = start;
-            return status;
+            // restart DFA
+            terminate();
+            // illegal token, thus failure regardless of ending state.
+            return false;
         }
-        currentState = this.transitionTable.getTransition(currToken);
+
+        transition(currToken);
         if (currentState != null) {
             status = accepts(s.substring(1));
         }
@@ -152,6 +174,24 @@ public class DFA implements DFAInterface {
     public boolean isStart(String name) {
         State candidate = states.get(name);
         return start.equals(candidate);
+    }
+
+    /**
+     * Checks to see if DFA is in valid finish state, and restarts DFA.
+     * @return true if current state is valid, false otherwise
+     */
+    private boolean terminate() {
+        boolean status = finalStates.contains(currentState);
+        currentState = start;
+        return status;
+    }
+
+    private boolean transition(char symb) {
+        if (alphabet.contains(symb)) {
+            currentState = transitionTable.getTransition(symb);
+            return true;
+        }
+        return false;
     }
 
     /**
