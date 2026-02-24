@@ -9,9 +9,7 @@ public abstract class State {
 	 */
 	private String name;
 	
-	public State() {
-		
-	}
+	public State() {}
 	
 	/**
 	 * All concrete consturctors must
@@ -36,16 +34,7 @@ public abstract class State {
 		return this.name;
 	}
 
-//    @Override
-//    public boolean equals(Object o) {
-//        if (o instanceof String) {
-//            return name.equals(o);
-//        } else if (o instanceof State) {
-//            return name.equals(((State) o).getName());
-//        } else {
-//            return super.equals(o);
-//        }
-//    }
+
 
     @Override
     public int hashCode() {
