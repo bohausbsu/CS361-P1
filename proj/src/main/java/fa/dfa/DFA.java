@@ -7,21 +7,14 @@ import java.util.*;
 
 public class DFA implements DFAInterface {
 
-
-
-
-    // Alphabet, All states, start state, final states, transitions
     private final Set<Character> alphabet;
     private final StateSet states;
     private State start;
     private final StateSet finalStates;
-//    private Map<String, Map<Character, State>> transitions;
     private final TransitionTable transitionTable;
     /*
         2D Map:
         fromState -> <symb, toState>
-
-
      */
 
     private State currentState;
@@ -29,7 +22,7 @@ public class DFA implements DFAInterface {
     public DFA() {
             this.alphabet = new HashSet<Character>();
             this.states = new StateSet();
-            this.start = new DFAState("");
+            this.start = null;
             this. finalStates = new StateSet();
             this.transitionTable = new TransitionTable();
     }
@@ -44,7 +37,6 @@ public class DFA implements DFAInterface {
         this.transitionTable = new TransitionTable(transitionTable);
     }
 
-    // TODO: Convert to using new StateSet
     @Override
     public boolean addTransition(String fromState, String toState, char onSymb) {
 
@@ -73,8 +65,6 @@ public class DFA implements DFAInterface {
         for (State state : finalStates) {
             newT.add(newQ.get(state.getName()));
         }
-
-        DFA tempDFA = new DFA();
 
         TransitionTable temp = transitionTable.swap(symb1, symb2);
         return new DFA(newSigma, newQ, newQ0, newT, temp);
@@ -164,10 +154,11 @@ public class DFA implements DFAInterface {
         return start.equals(candidate);
     }
 
-//    private Map<Character, State> getCurrentTransitions() {
-//        return transitions.get(currentState);
-//    }
-
+    /**
+     * Represents a DFA transition table. Object must be instantiated
+     * within related <code>DFA</code> to properly map to DFA's state
+     * objects.
+     */
     private class TransitionTable {
 
         private final Map<State, Map<Character, State>> table;
@@ -180,6 +171,14 @@ public class DFA implements DFAInterface {
             this.table = cloneFromTable(source);
         }
 
+        /**
+         * Adds the transition specified, given all arguments are valid members of encapsulating
+         * DFA.
+         * @param from source State
+         * @param onSymb transition token
+         * @param to destination State
+         * @return true if transition was added, false if transition had illegal argument.
+         */
         private boolean addTransition(State from, char onSymb, State to) {
             if (!states.contains(from) || !states.contains(to) || !alphabet.contains(onSymb)) {
                 // illegal states or symbol
@@ -207,20 +206,41 @@ public class DFA implements DFAInterface {
 
         private boolean addSymbol(char symbol) {
             for (Map<Character, State> transRow : table.values()) {
-                transRow.put(symbol, null);
+                // method should return null unless value was overwritten
+                if (transRow.put(symbol, null) != null) {
+                    return false;
+                };
             }
             return true;
         }
 
+        /**
+         * Returns transition on symbol from DFA's current state
+         * @param symbol transition token
+         * @return destination State
+         */
         private State getTransition(char symbol) {
             return getTransition(currentState, symbol);
         }
 
+        /**
+         * Returns transition on symbol from provided DFA state
+         * @param from State origin
+         * @param symbol transition token
+         * @return destination State
+         */
         private State getTransition(State from, char symbol) {
             Map<Character, State> transRow = table.get(from);
             return transRow.get(symbol);
         }
 
+        /**
+         * Creates a new transition table where all transitions on <code>char1</code> instead
+         * transition on <code>char2</code>, and vice versa
+         * @param char1
+         * @param char2
+         * @return transformed transition table
+         */
         private TransitionTable swap(char char1, char char2) {
             TransitionTable temp = new TransitionTable();
             for (State fromState : table.keySet()) {
@@ -239,7 +259,12 @@ public class DFA implements DFAInterface {
             return temp;
         }
 
-        // used to create a trans table with local variable reference
+        /**
+         * Clones the transitions from another DFA to reference encapsulating instance's <code>State</code> objects,
+         * contained in the <code>alphabet</code> field.
+         * @param externalTable table with transitions to replicate
+         * @return data structure for a new transition table object
+         */
         private Map<State, Map<Character, State>> cloneFromTable(TransitionTable externalTable) {
             Map<State, Map<Character, State>> local = new HashMap<>();
             Map<State, Map<Character, State>> extTab = externalTable.table;
