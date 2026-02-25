@@ -7,11 +7,15 @@
 OVERVIEW:
 This program includes a DFA library, and a demonstration test suite. 
 INCLUDED FILES:
-* 
-e.g.
-* Class1.java - source file
-* Class2.java - source file
+* DFA.java - source file
+* DFAInterface.java - source file
+* DFAState.java - source file
+* FAInterface.java - source file
+* State.java - source file
+* StateSet.java - source file
+* DFATest.java - test file
 * README - this file
+
   COMPILING AND RUNNING:
   To compile the program in onyx you can use the command:
   javac -cp .:/usr/share/java/junit.jar ./test/dfa/DFATest.java
@@ -19,24 +23,27 @@ e.g.
   java -cp .:/usr/share/java/junit.jar:/usr/share/java/hamcrest/hamcrest.jar
   org.junit.runner.JUnitCore test.dfa.DFATest
   Console output will give the results after the program finishes.
+
   
   PROGRAM DESIGN AND IMPORTANT CONCEPTS:
-  This is the sort of information someone who really wants to
-  understand your program - possibly to make future enhancements -
-  would want to know.
-  Explain the main concepts and organization of your program so that
-  the reader can understand how your program works. This is not a repeat
-  of javadoc comments or an exhaustive listing of all methods, but an
-  explanation of the critical algorithms and object interactions that make
-  up the program.
-  Explain the main responsibilities of the classes and interfaces that make
-  up the program. Explain how the classes work together to achieve the
-  program
-  goals. If there are critical algorithms that a user should understand,
-  explain them as well.
-  If you were responsible for designing the program's classes and choosing
-  how they work together, why did you design the program this way? What, if
-  anything, could be improved?
+
+The central code to the library exists in the DFA.java file. This creates a DFA as a java object. The DFA has DFA 5-tuple style 
+instance variables. The states in a FA exist as singletons, contained within the alphabet field. That is, any reference to a state within
+an object will and should always reference the same State object in memory. The State objects are unique to a single DFA object, meaning
+two state objects with the same name in distinct DFA objects will not be equal through the java.Object's .equal method. States can, however,
+be referenced by name via String parameters in DFA methods. The methods will correlate to an internal State object (if exists) to carry out
+transitions and other DFA tasks.
+The transition logic is maintained within an internal class in DFA.java called TransitionTable. The table, instantiated within an encapsulating
+DFA object, can access the singleton states of the DFA and maintains a transition table through a 2D map.
+The State.java file is an abstract datatype that provides universal logic applicable to multiple finite automata. The DFAState.java file
+is simply a concrete extension of this, and does not add any additional logic.
+The StateSet is a data structure that is used to easily manage singleton states and string querying among a finite automata's states.
+A potential area of expansion in this library is within the transition table. The transition logic is almost entirely abstracted from the
+inner values of a State object. Fully abstracting the logic would allow for possibly any object to be used as states or transition symbols.
+For a DFA representation, this might not have much use. However, more complex applications may find multifaceted axes on the transition table
+to be an incredibly powerful, while relatively simple, state machine
+
+
   TESTING:
   We tested our program with 3 different DFAs all different sizes and transitions.
   We tested to make sure all of our "add", "set", and "get" functions were working
@@ -64,30 +71,6 @@ e.g.
   EXTRA CREDIT:
   No extra credit.
   SOURCES:
-  All sources used outside of lecture notes, slides, and the textbook need
-  to
-  be cited here. If you used websites, used GenAI, asked your dad or your
-  boss
-  or your roommate for help then you must cite those resources. I am not
-  concerned if you use proper APA or MLA or another format as long as you
-  include
-  all relevant information. If it is a person or GenAI that you referenced,
-  be
-  sure to include who you talked to (or which AI you accessed), when you
-  talked
-  to them, and what help they provided (e.g. Student, Awesome. Private
-  communication, 21 January 2026. Discussed how polymorphism allows the
-  return
-  types of methods implemented in a class to be different from the class
-  specified
-  in the interface as long as the <type in implementation> “is-a” <type in
-  interface>.)
+* java.util.LinkedHashSet documentation
+
 --------------------------------------------------------------------------
---
-All content in a README file is expected to be written in clear English
-with
-proper grammar, spelling, and punctuation. If you are not a strong writer,
-be sure to get someone else to help you with proofreading. Consider all
-project
-documentation to be professional writing for your boss and/or potential
-customers.
