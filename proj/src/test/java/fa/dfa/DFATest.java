@@ -101,7 +101,7 @@ public class DFATest {
 				+ "Sigma = { 0 1 }\n"
 				+ "delta =\n"
 				+ "		0	1\n"
-				+ "	a	a	b\n"
+				+ "	a	a   b\n"
 				+ "	b	a	b\n"
 				+ "q0 = a\n"
 				+ "F = { b }";
@@ -373,6 +373,7 @@ public void test3_4() {
 	DFA dfa = dfa3();
 
 	String dfaStr = dfa.toString();
+    System.out.println(dfaStr);
 	String expStr = "Q={GDABCEF}\n"
 			+ "Sigma = {2 1}\n"
 			+ "delta =\n"

@@ -3,6 +3,7 @@ package fa.dfa;
 import fa.State;
 import fa.StateSet;
 
+import javax.print.DocFlavor;
 import java.util.*;
 
 public class DFA implements DFAInterface {
@@ -20,10 +21,10 @@ public class DFA implements DFAInterface {
     private State currentState;
 
     public DFA() {
-            this.alphabet = new HashSet<Character>();
+            this.alphabet = new LinkedHashSet<Character>();
             this.states = new StateSet();
             this.start = null;
-            this. finalStates = new StateSet();
+            this.finalStates = new StateSet();
             this.transitionTable = new TransitionTable();
     }
 
@@ -194,6 +195,44 @@ public class DFA implements DFAInterface {
         return false;
     }
 
+    @Override
+    public String toString() {
+        //States
+        StringBuilder q = new StringBuilder();
+        //Alphabet
+        StringBuilder sigma = new StringBuilder();
+        //Final states
+        StringBuilder f = new StringBuilder();
+        //message
+        StringBuilder message = new StringBuilder();
+
+        q.append(" Q = { ");
+        for (State state: states) {
+            q.append(state + " ");
+        }
+        q.append("}\n");
+
+        sigma.append("Sigma = { ");
+        for (Character c: alphabet) {
+            sigma.append(c +" ");
+        }
+        sigma.append("}\n");
+
+        f.append("F = { ");
+        for (State finalState: finalStates) {
+            f.append(finalState +" ");
+        }
+        f.append("}");
+
+        message.append(q);
+        message.append(sigma);
+        message.append("delta =\n" + transitionTable.toString());
+        message.append("q0 = " + start + "\n");
+        message.append(f);
+
+        return message.toString();
+    }
+
     /**
      * Represents a DFA transition table. Object must be instantiated
      * within related <code>DFA</code> to properly map to DFA's state
@@ -329,8 +368,29 @@ public class DFA implements DFAInterface {
 
         @Override
         public String toString() {
-            // TODO
-            return "";
+            StringBuilder tt = new StringBuilder();
+            StringBuilder q = new StringBuilder();
+            q.append("		");
+            for (Character c: alphabet) {
+                q.append(c + "	");
+            }
+            q.append("\n");
+
+            StringBuilder a = new StringBuilder();
+            a.append("	");
+
+            for (State state: states) {
+                a.append(state + "	");
+                for (Character c: alphabet) {
+                    State temp = getTransition(state, c);
+                    a.append(temp + "	");
+                }
+                a.append("\n");
+            }
+            tt.append(q);
+            tt.append(a);
+
+            return tt.toString();
         }
     }
 }

@@ -1,9 +1,9 @@
 package fa;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Iterator;
 
-public class StateSet extends HashSet<State> {
+public class StateSet extends LinkedHashSet<State> {
 
     public StateSet() {
         super();
