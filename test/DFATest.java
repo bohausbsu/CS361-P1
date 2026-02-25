@@ -1,6 +1,7 @@
-package fa.dfa;
+package test;
 
 //import static org.junit.Assert.*;
+import fa.dfa.DFA;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
