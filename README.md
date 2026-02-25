@@ -13,21 +13,13 @@ e.g.
 * Class2.java - source file
 * README - this file
   COMPILING AND RUNNING:
-  Give the command for compiling the program, the command
-  for running the program, and any usage instructions the
-  user needs.
-  These are command-line instructions for a system like onyx.
-  They have nothing to do with Eclipse or any other IDE. They
-  must be specific - assume the user has Java installed, but
-  has no idea how to compile or run a Java program from the
-  command-line.
-  e.g.
-  From the directory containing all source files, compile the
-  driver class (and all dependencies) with the command:
-  $ javac Class1.java
-  Run the compiled class file with the command:
-  $ java Class1
+  To compile the program in onyx you can use the command:
+  javac -cp .:/usr/share/java/junit.jar ./test/dfa/DFATest.java
+  To run the program, you can use the command:
+  java -cp .:/usr/share/java/junit.jar:/usr/share/java/hamcrest/hamcrest.jar
+  org.junit.runner.JUnitCore test.dfa.DFATest
   Console output will give the results after the program finishes.
+  
   PROGRAM DESIGN AND IMPORTANT CONCEPTS:
   This is the sort of information someone who really wants to
   understand your program - possibly to make future enhancements -
@@ -46,22 +38,31 @@ e.g.
   how they work together, why did you design the program this way? What, if
   anything, could be improved?
   TESTING:
-  How did you test your program to be sure it works and meets all of the
-  requirements? What was the testing strategy? What kinds of tests were
-  run?
-  Can your program handle bad input? Is your program idiot-proof? How do
-  you
-  know? What are the known issues / bugs remaining in your program?
+  We tested our program with 3 different DFAs all different sizes and transitions.
+  We tested to make sure all of our "add", "set", and "get" functions were working
+  properly by testing the expected output and what we actually got. Then lastly, we
+  tested out swap function by comparing the expected with the given.
+  Our program can handle bad input, if it is an invalid token it will cause the DFA
+  to fail. We cannot say that this program is idiot-proof because we did not do
+  further testing that what was provided.
+  We do not have any known issues or bugs remaining.
   DISCUSSION:
-  Discuss the issues you encountered during programming (development)
-  and testing. What problems did you have? What did you have to research
-  and learn on your own? What kinds of errors did you get? How did you
-  fix them?
-  What parts of the project did you find challenging? Is there anything
-  that finally "clicked" for you in the process of working on this project?
+  One issue we had was we were using a HashSet for our states and alphabet. This caused
+  each of the sets to be sorted when they were supposed to be in the order they were added.
+  We ended up using Java library documentation to find another set option that did not sort
+  and that was LinkedHashSet.
+  The other issue we had was when the inner-class, TransitionTable, was instantiated, it
+  kept a reference to the object in which it was instantiated. Which meant creating a copy
+  of it to put into a new DFA, through the swap method, referenced different state objects than
+  those that exist in the new DFA. To get around this, we allowed a transition table to be
+  passed into the constructor and used that transition table to create a new instance of a
+  transition table that referenced the local state objects.
+  We found it challenging to navigate a nested map and debugging the swap problem.
+  One thing that clicked for us was using Java library documentation to find a solution
+  to our project needs.
+  
   EXTRA CREDIT:
-  If the project had opportunities for extra credit that you attempted,
-  be sure to call it out so the grader does not overlook it.
+  No extra credit.
   SOURCES:
   All sources used outside of lecture notes, slides, and the textbook need
   to
